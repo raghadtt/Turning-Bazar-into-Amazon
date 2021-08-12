@@ -5,7 +5,10 @@ from flask_caching import Cache
 import requests
 import json
 
+cache = Cache(config={'CACHE_TYPE': 'SimpleCache'})
 app = Flask(__name__)
+cache.init_app(app)
+
 api = Api(app)
 
 
@@ -18,9 +21,9 @@ class Search(Resource):
         if data:
            return {'items from cache': data},200
         else:
-           resp =requests.get('http://192.168.1.109:5000/search/'+str(name)).json()          
+           resp =requests.get('http://192.168.1.100:5000/search/'+str(name)).json()          
            cache.set(name, resp)
-           return resp
+           return {'items':resp}
            
            
 class Info(Resource):
@@ -32,9 +35,9 @@ class Info(Resource):
         if data:
            return {'items from cache': data},200
         else:
-           resp=requests.get('http://192.168.1.109:5000/info/'+str(num)).json()
+           resp=requests.get('http://192.168.1.100:5000/info/'+str(num)).json()
            cache.set(str(num), resp)
-           return resp
+           return {'items': resp}
   
 class Purchase(Resource):
 
