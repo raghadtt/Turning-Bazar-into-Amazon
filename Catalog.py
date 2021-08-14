@@ -39,6 +39,8 @@ class Update(Resource):
         #compare the entities with the specified id and decrement their quantity by one after purchasing successfully
         self.data.loc[ self.data["quantity"].loc[self.data["id"] == num].index , "quantity"] = self.data["quantity"] - 1
         self.data.to_csv("catalog.csv", index=False)
+        #to invalidate cache consistency from server to frontend server that contains cache
+        requests.get('http://192.168.1.105:5000/invalidate/'+str(num))
         return {'message':'You bought this book sucessfully '},200
       
     
