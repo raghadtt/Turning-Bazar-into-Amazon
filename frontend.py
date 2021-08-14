@@ -49,8 +49,11 @@ class Purchase(Resource):
 class Invalidate(Resource):
     
     @cache.cached(timeout=50)
+    @cache.memoize(50)
     def get(self, item):
-        cache.delete(item)
+        data = cache.get(item)
+        if data:
+           cache.delete(item)
 
       
 api.add_resource(Search, '/search/<string:name>')
