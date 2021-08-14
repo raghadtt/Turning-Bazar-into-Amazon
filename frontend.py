@@ -44,10 +44,19 @@ class Purchase(Resource):
     def put(self,num):
         #from order server
         return requests.put('http://192.168.1.108:5000/purchase/'+str(num)).json() 
-       
+    
+#implement cache consistency after any update   
+class Invalidate(Resource):
+    
+    @cache.cached(timeout=50)
+    def get(self, item):
+        cache.delete(item)
+
+      
 api.add_resource(Search, '/search/<string:name>')
 api.add_resource(Info, '/info/<int:num>')
 api.add_resource(Purchase, '/purchase/<int:num>')
+api.add_resource(Invalidate, '/invalidate/<string:item>')
 
 if __name__ == '__main__':
     app.run()
