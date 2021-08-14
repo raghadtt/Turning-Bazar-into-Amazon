@@ -17,12 +17,24 @@ class Search(Resource):
     @cache.memoize(50)
     def get(self,name):
     
+        global count
+        global arr
+        global i
+        
         data = cache.get(name)
         if data:
            return {'items from cache': data},200
         else:
-           resp =requests.get('http://192.168.1.100:5000/search/'+str(name)).json()          
+           resp =requests.get('http://192.168.1.101:5000/search/'+str(name)).json()          
            cache.set(name, resp)
+           
+           arr[count] = name
+           count = count + 1
+           
+           if count > 6:
+              cache.delete(arr[i])
+              i= i+1
+                
            return {'items':resp}
            
            
@@ -30,13 +42,24 @@ class Info(Resource):
 
     @cache.memoize(50)
     def get(self,num):
+        global count
+        global arr
+        global i
         
         data = cache.get(str(num))
         if data:
            return {'items from cache': data},200
         else:
-           resp=requests.get('http://192.168.1.100:5000/info/'+str(num)).json()
+           resp=requests.get('http://192.168.1.101:5000/info/'+str(num)).json()
            cache.set(str(num), resp)
+           
+           arr[count] = str(num)
+           count = count + 1
+           
+           if count > 6:
+              cache.delete(arr[i])
+              i= i+1
+              
            return {'items': resp}
   
 class Purchase(Resource):
