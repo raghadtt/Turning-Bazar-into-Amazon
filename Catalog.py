@@ -38,15 +38,22 @@ class Update(Resource):
         self.data.loc[ self.data["quantity"].loc[self.data["id"] == num].index , "quantity"] = self.data["quantity"] - 1
         self.data.to_csv("catalog.csv", index=False)
         requests.get('http://192.168.1.105:5000/invalidate/'+str(num))
-        requests.put('http://192.168.1.109:5000/update/item_num/'+str(num)).json()
-        return {'message from A':'You bought this book sucessfully'},200
-                
+        requests.put('http://192.168.1.110:5000/update2/item_num/'+str(num)).json()
+        return {'message from B':'You bought this book sucessfully'},200
+
+class Update2(Resource):
+
+      def put(self,num):
+        self.data = pd.read_csv('catalog.csv')
+        self.data.loc[ self.data["quantity"].loc[self.data["id"] == num].index , "quantity"] = self.data["quantity"] - 1
+        self.data.to_csv("catalog.csv", index=False)
+          
         
 # Add URL endpoints
 api.add_resource(Search, '/search/<string:name>')
 api.add_resource(Info, '/info/<int:num>')
 api.add_resource(Update, '/update/item_num/<int:num>')
-
+api.add_resource(Update2, '/update2/item_num/<int:num>')
 
 if __name__ == '__main__':
     app.run()
