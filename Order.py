@@ -10,7 +10,7 @@ api = Api(app)
 class Purchase(Resource):
     def put(self,num):
     
-        info = requests.get('http://192.168.1.105:5000/info/'+str(num)).json()
+        info = requests.get('http://192.168.1.110:5000/info/'+str(num)).json()
         df = pd.DataFrame(info, columns = ['quantity','title','price'])
         result = df.iloc[0]['quantity']
         title = df.iloc[0]['title']
@@ -24,9 +24,9 @@ class Purchase(Resource):
            })
            data = data.append(new_data, ignore_index = True)
            data.to_csv('orders.csv', index=False)
-           return requests.put('http://192.168.1.100:5000/update/item_num/'+str(num)).json()
+           return requests.put('http://192.168.1.110:5000/update/item_num/'+str(num)).json()
         else:
-          return {'message':'The operation is failed, this book is over'},200
+          return {'message from A':'The operation is failed, this book is over'},200
           
          
     
@@ -35,4 +35,3 @@ api.add_resource(Purchase, '/purchase/<int:num>')
 
 if __name__ == '__main__':
     app.run()
-    
